@@ -1,0 +1,33 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Browser Terminal</title>
+  <link rel="stylesheet" href="https://unpkg.com/xterm/css/xterm.css" />
+  <script src="https://unpkg.com/xterm/lib/xterm.js"></script>
+  <script src="https://unpkg.com/xterm-addon-fit/lib/xterm-addon-fit.js"></script>
+</head>
+<body>
+  <div id="terminal"></div>
+
+  <script>
+    const terminal = new Terminal();
+    const socket = new WebSocket('ws://localhost:3000');
+
+    terminal.open(document.getElementById('terminal'));
+    const fitAddon = new FitAddon.FitAddon();
+    terminal.loadAddon(fitAddon);
+    fitAddon.fit();
+
+    terminal.onData(data => {
+      socket.send(data);
+    });
+
+    socket.onmessage = (event) => {
+      terminal.write(event.data);
+    };
+  </script>
+</body>
+</html>
