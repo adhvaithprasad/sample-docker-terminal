@@ -1,4 +1,3 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,6 +10,7 @@
 </head>
 <body>
   <div id="terminal"></div>
+  <button id="cloneRepoBtn">Clone GitHub Repository</button>
 
   <script>
     const terminal = new Terminal();
@@ -28,6 +28,22 @@
     socket.onmessage = (event) => {
       terminal.write(event.data);
     };
+
+    // Check if the repository has been cloned before
+    let repoCloned = false;
+
+    document.getElementById('cloneRepoBtn').addEventListener('click', async () => {
+      if (!repoCloned) {
+        const repoName = prompt('Enter the name of the GitHub repository:');
+        if (repoName) {
+          const command = `git clone https://github.com/${repoName}.git && cd ${repoName.split("/")[1]}`;
+          socket.send(command);
+          repoCloned = true;
+        }
+      } else {
+        alert('Repository has already been cloned.');
+      }
+    });
   </script>
 </body>
 </html>
